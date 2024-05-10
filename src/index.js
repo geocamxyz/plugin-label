@@ -1,11 +1,31 @@
-import { label } from './lib/label.js';
+import { label } from "./lib/label.js";
 
 export class GeocamViewerLabel extends HTMLElement {
+  static get observedAttributes() {
+    return ["caption"];
+  }
+
   constructor() {
     super();
     this.plugin = null;
     // this.yaw = this.getAttribute('yaw') || 0;
     console.log("label init");
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log("attribute changed", name, newValue);
+    const that = this;
+
+    const debouceAttrChange = function (name, val) {
+         const viewer = that.parentNode.viewer
+      if (viewer && viewer.stores["label"]) {
+          viewer.stores["label"](val);
+      } else {
+        setTimeout(() => debouceAttrChange(name, val), 100);
+      }
+    };
+
+    debouceAttrChange(name, newValue);
   }
 
   connectedCallback() {
@@ -14,12 +34,10 @@ export class GeocamViewerLabel extends HTMLElement {
     const parent = this.parentNode;
     if (parent.viewer && parent.viewer.plugin) {
       // Call a method on the parent
-        this.plugin = new label();
-  parent.viewer.plugin(this.plugin);
+      this.plugin = new label();
+      parent.viewer.plugin(this.plugin);
     } else {
-      console.error(
-        "GeocamViewerLabel must be a child of GeocamViewer"
-      );
+      console.error("GeocamViewerLabel must be a child of GeocamViewer");
     }
   }
 
@@ -30,7 +48,4 @@ export class GeocamViewerLabel extends HTMLElement {
   }
 }
 
-window.customElements.define(
-  "geocam-viewer-label",
-  GeocamViewerLabel
-);
+window.customElements.define("geocam-viewer-label", GeocamViewerLabel);
