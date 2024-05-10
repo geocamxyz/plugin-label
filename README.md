@@ -27,7 +27,7 @@ The .js file can be imported into your .html file using the below code (This can
 <script type="importmap">
   {
     "imports": {
-      "geocam-viewer": "https://cdn.jsdelivr.net/gh/geocamxyz/plugin-label@v2.0.3/dist/label.js"
+      "label": "https://cdn.jsdelivr.net/gh/geocamxyz/plugin-label@v2.0.3/dist/label.js"
     }
   }
 </script>
