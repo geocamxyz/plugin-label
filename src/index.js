@@ -18,7 +18,7 @@ export class GeocamViewerLabel extends HTMLElement {
 
     const debouceAttrChange = function (name, val) {
          const viewer = that.parentNode.viewer
-      if (viewer && viewer.stores["label"]) {
+      if (viewer && viewer["label"]) {
           viewer.stores["label"](val);
       } else {
         setTimeout(() => debouceAttrChange(name, val), 100);
@@ -31,11 +31,12 @@ export class GeocamViewerLabel extends HTMLElement {
   connectedCallback() {
     console.log("label connected");
     const node = this;
+    this.plugin = new label();
     const parent = this.parentNode;
-    if (parent.viewer && parent.viewer.plugin) {
+    this.viewer = parent.viewer;
+    if ( this.viewer &&  this.viewer.plugin) {
       // Call a method on the parent
-      this.plugin = new label();
-      parent.viewer.plugin(this.plugin);
+        this.viewer.plugin(this.plugin);
     } else {
       console.error("GeocamViewerLabel must be a child of GeocamViewer");
     }
@@ -43,6 +44,7 @@ export class GeocamViewerLabel extends HTMLElement {
 
   disconnectedCallback() {
     this.plugin = null;
+    this.viewer = null;
     console.log("labe disconnected");
     // Clean up the viewer
   }
