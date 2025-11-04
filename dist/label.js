@@ -1,10 +1,10 @@
-const r = (o, e = {}, n = "") => {
-  const l = document.createElement(o);
-  for (let t in e)
-    l.setAttribute(t, e[t]);
-  return l.innerHTML = n, l;
-}, d = (o, e) => (document.getElementById(o) || document.getElementsByTagName("head")[0].prepend(r("STYLE", { type: "text/css" }, e)), !0), b = function(o = {}) {
-  let e, n, l, t;
+const u = (l, e = {}, n = "") => {
+  const t = document.createElement(l);
+  for (let o in e)
+    t.setAttribute(o, e[o]);
+  return t.innerHTML = n, t;
+}, d = (l, e) => (document.getElementById(l) || document.getElementsByTagName("head")[0].prepend(u("STYLE", { type: "text/css" }, e)), !0), g = function(l = {}) {
+  let e, n, t, o;
   d("geocam-compass-label", `
   .geocam-label {
     background-color: rgba(255,255,255,0.5);
@@ -17,39 +17,53 @@ const r = (o, e = {}, n = "") => {
   .geocam-label-empty {
     background-color: rgba(255,255,255,0);
   }
-  `), this.init = function(s) {
-    e = s, t = r("DIV", { class: "geocam-label" }), e.addControl(t, "top"), l = e.store("label"), n = l((i) => {
-      i ? (t.innerHTML = i, t.classList.remove("geocam-label-empty")) : (t.innerHTML = "", t.classList.add("geocam-label-empty"));
+  `), this.init = function(r) {
+    e = r, o = u("DIV", { class: "geocam-label" }), e.addControl(o, "top"), t = e.store("label"), n = t((i) => {
+      i ? (o.innerHTML = i, o.classList.remove("geocam-label-empty")) : (o.innerHTML = "", o.classList.add("geocam-label-empty"));
     });
   }, this.destroy = function() {
-    n(), e.wrapper.removeChild(l);
+    n(), e.wrapper.removeChild(t);
   };
 };
-class u extends HTMLElement {
+class b extends HTMLElement {
   static get observedAttributes() {
     return ["caption"];
   }
   constructor() {
-    super(), this.plugin = null, console.log("label init");
+    super(), this.plugin = null, this.viewer = null, console.log("label init");
   }
-  attributeChangedCallback(e, n, l) {
-    console.log("attribute changed", e, l);
-    const t = this, c = function(s, i) {
-      const a = t.parentNode.viewer;
-      a && a.label ? a.stores.label(i) : setTimeout(() => c(s, i), 100);
+  attributeChangedCallback(e, n, t) {
+    console.log("attribute changed", e, t);
+    const o = this, c = function(r, i) {
+      const a = o.closest("geocam-viewer");
+      if (!a) return;
+      const s = a.viewer;
+      s && s.stores && typeof s.stores.label == "function" ? s.stores.label(i) : setTimeout(() => c(r, i), 100);
     };
-    c(e, l);
+    c(e, t);
   }
   connectedCallback() {
-    console.log("label connected"), this.plugin = new b();
-    const e = this.parentNode;
-    this.viewer = e.viewer, this.viewer && this.viewer.plugin ? this.viewer.plugin(this.plugin) : console.error("GeocamViewerLabel must be a child of GeocamViewer");
+    console.log("label connected");
+    const e = this.closest("geocam-viewer");
+    if (!e) {
+      console.error("GeocamViewerLabel must be a child of GeocamViewer");
+      return;
+    }
+    const n = () => {
+      const t = e.viewer;
+      if (t && typeof t.plugin == "function") {
+        if (this.plugin) return;
+        this.viewer = t, this.plugin = new g(), this.viewer.plugin(this.plugin);
+      } else
+        setTimeout(n, 50);
+    };
+    n();
   }
   disconnectedCallback() {
-    this.plugin = null, this.viewer = null, console.log("labe disconnected");
+    this.plugin && typeof this.plugin.destroy == "function" && this.plugin.destroy(), this.plugin = null, this.viewer = null, console.log("labe disconnected");
   }
 }
-window.customElements.define("geocam-viewer-label", u);
+window.customElements.define("geocam-viewer-label", b);
 export {
-  u as GeocamViewerLabel
+  b as GeocamViewerLabel
 };
