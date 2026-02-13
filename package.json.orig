@@ -1,0 +1,16 @@
+{
+  "name": "label",
+  "private": true,
+<<<<<<< HEAD
+  "version": "2.4.0rc2",
+=======
+  "version": "2.4.0rc3",
+>>>>>>> 41175a69f08457a66302d406d3172fc966cd0d3f
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^4.0.4"
+  }
+}
