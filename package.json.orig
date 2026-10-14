@@ -2,10 +2,10 @@
   "name": "label",
   "private": true,
 <<<<<<< HEAD
-  "version": "2.4.0rc2",
+  "version": "2.4.6",
 =======
-  "version": "2.4.0rc3",
->>>>>>> 41175a69f08457a66302d406d3172fc966cd0d3f
+  "version": "2.4.7",
+>>>>>>> 7d7cbc5b9c83d93316fc553619662c9eb39e172b
   "type": "module",
   "scripts": {
     "build": "vite build"
